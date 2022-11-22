@@ -40,4 +40,17 @@
                    "SQL"
                    "XML"))))
 
+(ert-deftest test-build-args ()
+  (should (equal (wgetpaste-build-args
+                  :language "bpaste"
+                  :nick "emacs"
+                  :description "an example paste"
+                  :expiration "1day"
+                  :ignore-configs)
+                 '("--language" "bpaste"
+                   "--nick" "emacs"
+                   "--description" "an example paste"
+                   "--expiration" "1day"
+                   "--ignore-configs"))))
+
 (ert-run-tests-batch-and-exit)
