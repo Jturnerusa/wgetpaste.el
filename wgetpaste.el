@@ -67,6 +67,13 @@
                             nil)))
     flags))
 
+(defun wgetpaste-parse-url-from-process-output (process-output)
+  (let* ((split-by-newline (string-lines process-output))
+         (first-line (car split-by-newline))
+         (split-by-delimiter (string-split first-line ": " t))
+         (url (car (last split-by-delimiter))))
+    url))
+
 (provide 'wgetpaste)
 
 ;;; wgetpaste.el ends here

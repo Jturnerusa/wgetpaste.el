@@ -53,4 +53,9 @@
                    "--expiration" "1day"
                    "--ignore-configs"))))
 
+(ert-deftest test-parse-url ()
+  (should (equal (wgetpaste-parse-url-from-process-output
+                  "Your paste can be seen here: https://dpaste.com/testpaste\n")
+                 "https://dpaste.com/testpaste")))
+
 (ert-run-tests-batch-and-exit)
