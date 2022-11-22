@@ -74,6 +74,10 @@
          (url (car (last split-by-delimiter))))
     url))
 
+(defun wgetpaste-process-success (process-output)
+  (kill-new (wgetpaste-parse-url-from-process-output process-output))
+  (message "%s (url added to kill ring)" process-output))
+
 (provide 'wgetpaste)
 
 ;;; wgetpaste.el ends here
