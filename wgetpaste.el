@@ -78,6 +78,33 @@
   (kill-new (wgetpaste-parse-url-from-process-output process-output))
   (message "%s (url added to kill ring)" process-output))
 
+(defun wgetpaste-process-sentinel (process event)
+  (unless (process-live-p process)
+    (let ((process-output (with-current-buffer (process-buffer process)
+                            (buffer-string))))
+      (if (zerop (process-exit-status process))
+          (wgetpaste-process-success process-output)
+        (error "%s" output)))))
+
+(defun wgetpaste-process-start (executable &rest args)
+  (if (not (xor (plist-get args :stdin) (plist-get args :files)))
+      (error "must provide either stdin or files for wgetpaste to operate on")
+    (let ((process (make-process
+                    :name "wgetpaste"
+                    :buffer (with-current-buffer (get-buffer-create wgetpaste-buffer)
+                              (erase-buffer)
+                              (current-buffer))
+                    :command `(,executable
+                               ,@(plist-get args :arguments)
+                               ,@(plist-get args :files))                               
+                    :connection-type 'pipe
+                    :sentinel 'wgetpaste-process-sentinel)))
+      (when-let ((stdin (plist-get args :stdin)))
+        (process-send-string process stdin)
+        (unless (string-suffix-p "\n" stdin)
+          (process-send-string process "\n"))
+        (process-send-eof process)))))
+
 (provide 'wgetpaste)
 
 ;;; wgetpaste.el ends here
