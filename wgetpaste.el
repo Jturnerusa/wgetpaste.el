@@ -73,7 +73,7 @@
 ;; hooks
 
 (defun wgetpaste-clear-stdout-buffer ()
-  (with-current-buffer wgetpaste-stdout-buffer
+  (with-current-buffer (get-buffer-create wgetpaste-stdout-buffer)
     (erase-buffer)))
 
 (defun wgetpaste-save-url-to-clipboard ()
