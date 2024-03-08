@@ -1,0 +1,20 @@
+* wgetpaste.el
+A small Emacs library to use wgetpaste from inside of Emacs.
+
+* basic use
+Just run the interactive ~wgetpaste~ command in the minibuffer or via keybinding in a buffer of choice, with or without a region selected. The paste's URL will copied to the kill-ring and/or system clipboard if the upload is successful. A minibuffer notification will appear when the upload is ready!
+
+* customization hooks
+Wgetpaste.el hooks can allow you to customize the behaviour of wgetpaste based on the state of your buffer.
+
+Here is an example to set the syntax highlighting to "Python" on files that have the "py" file extension.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'wgetpaste-before-upload-hook (lambda ()
+                                            (if-let* ((file-name (buffer-file-name))
+                                                      (string= (file-name-extension file-name) "py"))
+                                                (setq-local wgetpaste-args '("--language" "Python"))))
+            nil t)
+#+END_SRC
+
+Only some wgetpaste services support syntax highlighting, and some services have different names for the various syntax highlighting modes.
