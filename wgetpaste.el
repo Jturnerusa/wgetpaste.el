@@ -74,6 +74,12 @@
     (with-current-buffer work-buffer
       (wgetpaste-buffer))))
 
+(defun wgetpaste-file (file)
+  (interactive (list (read-file-name "wgetpaste file: ")))
+  (with-temp-buffer
+    (insert-file-contents-literally file)
+    (wgetpaste-buffer)))
+
 ;; hooks
 
 (defun wgetpaste-clear-stdout-buffer ()
