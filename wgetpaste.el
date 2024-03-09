@@ -17,6 +17,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+(require 'ansi-color)
+
 (defgroup wgetpaste nil
   "Wgetpaste interface for emacs")
 
@@ -82,6 +84,9 @@
 
 ;; hooks
 
+(defun wgetpaste-ansifilter ()
+  (ansi-color-filter-region (point-min) (point-max)))
+
 (defun wgetpaste-clear-stdout-buffer ()
   (with-current-buffer (get-buffer-create wgetpaste-stdout-buffer)
     (erase-buffer)))
@@ -97,6 +102,7 @@
 
 (when wgetpaste-install-hooks
   (add-hook 'wgetpaste-before-upload-hook 'wgetpaste-clear-stdout-buffer)
+  (add-hook 'wgetpaste-before-upload-hook 'wgetpaste-ansifilter)
   (add-hook 'wgetpaste-after-upload-hook 'wgetpaste-save-url-to-clipboard)
   (add-hook 'wgetpaste-upload-failure-hook 'wgetpaste-failed))
 
