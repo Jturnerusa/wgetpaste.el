@@ -44,6 +44,13 @@
 (defcustom wgetpaste-upload-failure-hook nil
   "Hooks to run after wgetpaste process exits unsuccessfully")
 
+(defcustom wgetpaste-sentinel (lambda (process _)
+                                (unless (process-live-p process)
+                                  (run-hooks (if (zerop (process-exit-status process))
+                                                 'wgetpaste-after-upload-hook
+                                               'wgetpaste-upload-failure-hook))))
+  "Sentinel function to install to wgetpaste process")
+
 (defun wgetpaste-buffer ()
   (run-hooks 'wgetpaste-before-upload-hook)
   (let ((process (make-process
@@ -52,10 +59,7 @@
                   :connection-type 'pipe
                   :buffer (get-buffer-create wgetpaste-stdout-buffer)
                   :stderr (get-buffer-create wgetpaste-stderr-buffer)
-                  :sentinel (lambda (process event)
-                              (unless (process-live-p process)
-                                (when (zerop (process-exit-status process))
-                                  (run-hooks 'wgetpaste-after-upload-hook)))))))
+                  :sentinel wgetpaste-sentinel)))
     (process-send-region process (point-min) (point-max))
     (process-send-eof process)
     process))
