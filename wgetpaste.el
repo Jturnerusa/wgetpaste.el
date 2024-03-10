@@ -23,35 +23,53 @@
   "Wgetpaste interface for emacs")
 
 (defcustom wgetpaste-stdout-buffer "*wgetpaste stdout*"
-  "Wgetpaste stdout buffer")
+  "Wgetpaste stdout buffer"
+  :type '(string)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-stderr-buffer "*wgetpaste stderr*"
-  "Wgetpaste stderr buffer")
+  "Wgetpaste stderr buffer"
+  :type '(string)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-executable "wgetpaste"
-  "Wgetpaste executable")
+  "Wgetpaste executable"
+  :type '(string)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-args nil
-  "Wgetpaste arguments")
+  "Wgetpaste arguments"
+  :type '(repeat string)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-install-hooks t
-  "Install default wgetpaste hooks")
+  "Install default wgetpaste hooks"
+  :type '(boolean)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-before-upload-hook nil
-  "Hooks to run before uploading a paste")
+  "Hooks to run before uploading a paste"
+  :type '(hook)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-after-upload-hook nil
-  "Hooks to run after wgetpaste process exits successfully")
+  "Hooks to run after wgetpaste process exits successfully"
+  :type '(hook)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-upload-failure-hook nil
-  "Hooks to run after wgetpaste process exits unsuccessfully")
+  "Hooks to run after wgetpaste process exits unsuccessfully"
+  :type '(hook)
+  :group 'wgetpaste)
 
 (defcustom wgetpaste-sentinel (lambda (process _)
                                 (unless (process-live-p process)
                                   (run-hooks (if (zerop (process-exit-status process))
                                                  'wgetpaste-after-upload-hook
                                                'wgetpaste-upload-failure-hook))))
-  "Sentinel function to install to wgetpaste process")
+  "Sentinel function to install to wgetpaste process"
+  :type '(function)
+  :group 'wgetpaste)
 
 (defun wgetpaste-buffer ()
   (run-hooks 'wgetpaste-before-upload-hook)
