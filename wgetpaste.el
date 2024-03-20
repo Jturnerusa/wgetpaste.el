@@ -62,6 +62,11 @@
   :type '(hook)
   :group 'wgetpaste)
 
+(defcustom wgetpaste-upload-history nil
+  "List of URLs from previous pastes"
+  :type '(list)
+  :group 'wgetpaste)
+
 (defcustom wgetpaste-sentinel (lambda (process _)
                                 (unless (process-live-p process)
                                   (run-hooks (if (zerop (process-exit-status process))
@@ -119,11 +124,17 @@
 (defun wgetpaste-failed ()
   (message "wgetpaste failed, see wgetpaste stderr buffer for error information"))
 
+(defun wgetpaste-save-url-to-history ()
+  (with-current-buffer wgetpaste-stdout-buffer
+    (let ((url (buffer-substring (point-min) (point-max))))
+      (push url wgetpaste-upload-history))))
+
 (when wgetpaste-install-hooks
   (add-hook 'wgetpaste-before-upload-hook 'wgetpaste-clear-stdout-buffer)
   (add-hook 'wgetpaste-before-upload-hook 'wgetpaste-ansifilter)
   (add-hook 'wgetpaste-after-upload-hook 'wgetpaste-save-url-to-clipboard)
-  (add-hook 'wgetpaste-upload-failure-hook 'wgetpaste-failed))
+  (add-hook 'wgetpaste-upload-failure-hook 'wgetpaste-failed)
+  (add-hook 'wgetpaste-after-upload-hook 'wgetpaste-save-url-to-history))
 
 (provide 'wgetpaste)
 ;;; wgetpaste.el ends here
