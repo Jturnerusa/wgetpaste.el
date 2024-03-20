@@ -72,7 +72,6 @@
   :group 'wgetpaste)
 
 (defun wgetpaste-buffer ()
-  (run-hooks 'wgetpaste-before-upload-hook)
   (let ((process (make-process
                   :name "wgetpaste"
                   :command `(,wgetpaste-executable ,@wgetpaste-args)
@@ -92,12 +91,14 @@
          (work-buffer (generate-new-buffer " *wgetpaste work buffer*" t)))
     (copy-to-buffer work-buffer (car region) (cdr region))
     (with-current-buffer work-buffer
+      (run-hooks 'wgetpaste-before-upload-hook)
       (wgetpaste-buffer))))
 
 (defun wgetpaste-file (file)
   (interactive (list (read-file-name "wgetpaste file: ")))
   (with-temp-buffer
     (insert-file-contents-literally file)
+    (run-hooks 'wgetpaste-before-upload-hook)
     (wgetpaste-buffer)))
 
 ;; hooks
